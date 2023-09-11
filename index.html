@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>네이버 로그인</title>
+</head>
+<style>
+*{
+    box-sizing:border-box;
+    font-family:sans-serif;
+}
+#logo{
+    display:block;
+    width:220px;
+    height:60px;
+}
+.a{
+    display:block;
+    width:340px;
+    font-size:14px;
+    padding: 0.65em;
+    padding-left:1em;
+    border-radius: 5px;
+   border-color: gray;
+   border-width:1px;
+   border-style:solid;
+   opacity:0.3;
+   letter-spacing: -2px;/*글자간격*/
+}
+#btn{
+    display:block;
+    border-radius: 10px;
+    color:aliceblue;
+    background-color: rgb(4, 198, 91);
+    width:340px;
+    font-size:18px;
+    padding: 0.6em;
+    margin: 20px 0px;
+    border:none;
+    font-weight:bold;
+    letter-spacing: -1px;
+}
+input[name=memberId]{
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+    border-bottom: none;
+}
+input[name-=memberPw]{
+    border-bottom-left-radius: 7px;
+    border-bottom-right-radius:7px;
+}
+
+</style>
+<body>
+    <form action="#" method="post" autocomplete="off">
+        <div align="center">
+        <img id="logo" src= "./images/naver.png">
+        <input class="a" type="text" name="memberId" placeholder="아이디">
+        <input class="a"type="password" name="memberPw" placeholder="비밀번호">
+        <button id="btn">로그인</button>
+    </div>
+    </form>
+</body>
+</html>
