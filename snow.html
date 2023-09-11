@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>merry christmas</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Imperial+Script&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        html, body {
+            padding: 0;
+            margin: 0;
+        }
+
+        .snow-wrapper {
+            position:fixed;
+
+            top:0;
+            left:0;
+            bottom:0;
+            right:0;
+
+            overflow: hidden;
+
+            background: #232526;  /* fallback for old browsers */
+            background: -webkit-linear-gradient(to right, #414345, #232526);  /* Chrome 10-25, Safari 5.1-6 */
+            background: linear-gradient(to right, #414345, #232526); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+            font-size: 10px;
+
+            z-index: 999;
+        }
+
+        .snow-wrapper > .snow {
+            position:absolute;
+            background:#fff;
+
+            width:1em;
+            height:1em;
+
+            border-radius: 50%;
+
+            z-index: 1000;
+
+            top:-5%;
+
+            /* 변경하여 다양한 표현을 시도 */
+            
+            /* 배율로 크기 변경 */
+            /* transform: scale(0.5); */
+
+            /* 불투명도로 밝기 변경 */
+            /* opacity: 0.25; */
+
+            /* 시작 지점 변경 */
+            /* left:750px; */
+        }
+        .snow.falling {
+            animation-name: falling;
+            animation-timing-function: linear;
+            animation-iteration-count: infinite;
+            animation-duration: 10s;
+        }
+
+        @keyframes falling {
+            from {
+                top:-5%;
+            }
+            to {
+                top:105%;
+            }
+        }
+
+        .main-text {
+            position: fixed;
+            z-index: 9999;
+
+            white-space: nowrap;
+            font-size: 150px;
+
+            top:50%;
+            left:50%;
+            transform:translate(-50%, -50%);
+            font-weight: bold;
+            
+            font-family: 'Imperial Script', cursive;
+
+            color: transparent;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            -webkit-background-clip: text;
+
+            background-color: #2F7336;  /* fallback for old browsers */
+            background-image: -webkit-linear-gradient(to right, #AA3A38, #2F7336);  /* Chrome 10-25, Safari 5.1-6 */
+            background-image: linear-gradient(to right, #AA3A38, #2F7336); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+            animation: glittering 5s ease infinite;
+        }
+
+        @keyframes glittering {
+            0% {
+                opacity:0;
+            }
+            50% {
+                opacity:1;
+            }
+            100% {
+                opacity:0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-text">
+        Merry Christmas!
+    </div>
+
+    <div class="snow-wrapper" ref="wrapper">
+        <!-- 추가 전/후 등을 관리할 수 있도록 그룹 설정 -->
+        <transition-group @before-enter="beforeEnter">
+            <div class="snow" :class="{falling:play}" v-for="(snow, index) in snowUnits" :key="index"></div>
+        </transition-group>
+    </div>
+
+    <script src="https://unpkg.com/vue@next"></script>
+    <script>
+        Vue.createApp({
+            //백그라운드 데이터 정의
+            data(){
+                return {
+                    //눈 내리기 사용 여부
+                    play:true,
+                    //시퀀스
+                    sequence:1,
+                    //개수만큼 눈이 만들어지도록 배열 준비
+                    snowUnits:[],
+                };
+            },
+            methods:{
+                //눈 추가
+                add(){
+                    this.snowUnits.push(this.sequence++);
+                },
+                generateSnow(size){
+                    for(let i=0; i < size; i++){
+                        this.add();
+                    }
+                },
+                //눈 추가 직전 호출할 메소드
+                //= 여기서 변화를 줄 항목들을 설정
+                //= el은 생성(추가)될 태그 객체
+                //= 변화 줄 항목(scale, opacity, animationDuration, animationDelay, left)
+                beforeEnter(el){
+                    
+                    //(1) left : 화면-오차 ~ 화면+오차 범위 내 생성
+                    const offset = 400;
+                    const min = -offset;
+                    const max = window.screen.width + offset;
+                    const left = this.generateRandomInteger(min, max);
+                    el.style.left = left + "px";
+
+                    //(2) scale : 0.25 부터 1 사이로 설정
+                    const scale = this.generateRandom(0.25, 1);
+                    el.style.transform = "scale("+scale+")";
+
+                    //(3) opacity : 0.1부터 1 사이로 설정
+                    const opacity = this.generateRandom(0.1, 1);
+                    el.style.opacity = opacity;
+
+                    //(4) animation : 
+                    //- 딜레이(1ms ~ 10000ms)
+                    //- 지속시간(10s ~ 30s)
+                    const delay = this.generateRandom(1, 10000);
+                    const duration = this.generateRandom(10000, 30000);
+                    el.style.animationDelay = delay+"ms";
+                    el.style.animationDuration = duration + "ms";
+                },
+                //랜덤 생성 메소드(1) - 실수
+                generateRandom(begin, end){
+                    const max = Math.max(begin, end);
+                    const min = Math.min(begin, end);
+                    const range = max - min;
+                    return Math.random() * range + min;
+                },
+                //랜덤 생성 메소드(2) - 정수
+                generateRandomInteger(begin, end){
+                    return parseInt(this.generateRandom(begin, end));
+                }
+            },
+            mounted(){
+                this.generateSnow(500);
+            },
+        }).mount(".snow-wrapper");
+    </script>
+</body>
+</html>
